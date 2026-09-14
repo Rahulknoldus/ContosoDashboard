@@ -16,8 +16,8 @@
 **Purpose**: Establish the project structure and local configuration required for the document feature.
 
 - [ ] T001 Create feature directory structure and confirm the document implementation path under `specs/001-document-upload-management/`
-- [ ] T002 [P] Add document storage configuration placeholders in `ContosoDashboard/appsettings.json` and `ContosoDashboard/appsettings.Development.json`
-- [ ] T003 [P] Create the local upload directory structure under `ContosoDashboard/AppData/uploads/` and document the secure storage path in the project setup notes
+- [x] T002 [P] Add document storage configuration placeholders in `ContosoDashboard/appsettings.json` and `ContosoDashboard/appsettings.Development.json`
+- [x] T003 [P] Create the local upload directory structure under `ContosoDashboard/AppData/uploads/` and document the secure storage path in the project setup notes
 
 ---
 
@@ -27,12 +27,12 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete.
 
-- [ ] T004 Add the `Document`, `DocumentShare`, `DocumentAccessLog`, and `ScanJobMessage` data model definitions in `ContosoDashboard/Models/Document.cs`, `ContosoDashboard/Models/DocumentShare.cs`, `ContosoDashboard/Models/DocumentAccessLog.cs`, and `ContosoDashboard/Models/ScanJobMessage.cs`
-- [ ] T005 [P] Extend `ContosoDashboard/Data/ApplicationDbContext.cs` with document DbSets, indexes, and relationships for project/task/user/document access tracking
-- [ ] T006 [P] Define the storage abstraction in `ContosoDashboard/Services/IFileStorageService.cs` and implement the local filesystem version in `ContosoDashboard/Services/LocalFileStorageService.cs`
-- [ ] T007 Define the document service contract and core authorization logic in `ContosoDashboard/Services/IDocumentService.cs` and `ContosoDashboard/Services/DocumentService.cs`
-- [ ] T008 [P] Add the Azure queue integration contract in `ContosoDashboard/Services/IScanQueueService.cs` and `ContosoDashboard/Services/AzureQueueScanService.cs` for future async virus scanning
-- [ ] T009 Register the document and storage services in `ContosoDashboard/Program.cs` and ensure authentication/authorization configuration remains aligned with the current mock identity model
+- [x] T004 Add the `Document`, `DocumentShare`, `DocumentAccessLog`, and `ScanJobMessage` data model definitions in `ContosoDashboard/Models/Document.cs`, `ContosoDashboard/Models/DocumentShare.cs`, `ContosoDashboard/Models/DocumentAccessLog.cs`, and `ContosoDashboard/Models/ScanJobMessage.cs`
+- [x] T005 [P] Extend `ContosoDashboard/Data/ApplicationDbContext.cs` with document DbSets, indexes, and relationships for project/task/user/document access tracking
+- [x] T006 [P] Define the storage abstraction in `ContosoDashboard/Services/IFileStorageService.cs` and implement the local filesystem version in `ContosoDashboard/Services/LocalFileStorageService.cs`
+- [x] T007 Define the document service contract and core authorization logic in `ContosoDashboard/Services/IDocumentService.cs` and `ContosoDashboard/Services/DocumentService.cs`
+- [x] T008 [P] Add the Azure queue integration contract in `ContosoDashboard/Services/IScanQueueService.cs` and `ContosoDashboard/Services/AzureQueueScanService.cs` for future async virus scanning
+- [x] T009 Register the document and storage services in `ContosoDashboard/Program.cs` and ensure authentication/authorization configuration remains aligned with the current mock identity model
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in parallel.
 
@@ -46,15 +46,15 @@
 
 ### Implementation for User Story 1
 
-- [ ] T010 [P] [US1] Build the document list and upload UI shell in `ContosoDashboard/Pages/Documents.razor`
-- [ ] T011 [P] [US1] Add metadata capture and validation logic for title, category, project assignment, and file size/type checks in `ContosoDashboard/Pages/Documents.razor`
-- [ ] T012 [US1] Implement the upload workflow in `ContosoDashboard/Services/DocumentService.cs`, including safe path generation, metadata persistence, and scan-queue enqueue behavior
-- [ ] Task 12: Implement `DocumentController` `POST /api/documents` endpoint in `ContosoDashboard/Controllers/DocumentController.cs`
+- [x] T010 [P] [US1] Build the document list and upload UI shell in `ContosoDashboard/Pages/Documents.razor`
+- [x] T011 [P] [US1] Add metadata capture and validation logic for title, category, project assignment, and file size/type checks in `ContosoDashboard/Pages/Documents.razor`
+- [x] T012 [US1] Implement the upload workflow in `ContosoDashboard/Services/DocumentService.cs`, including safe path generation, metadata persistence, and scan-queue enqueue behavior
+- [x] Task 12: Implement `DocumentController` `POST /api/documents` endpoint in `ContosoDashboard/Controllers/DocumentController.cs`
   - Depends on: Task 11 (DocumentService)
   - Note: Include comprehensive error handling for file size limits and unsupported types
-- [ ] T013 [US1] Implement local file persistence in `ContosoDashboard/Services/LocalFileStorageService.cs` using GUID-based filenames and a path pattern outside `wwwroot`
+- [x] T013 [US1] Implement local file persistence in `ContosoDashboard/Services/LocalFileStorageService.cs` using GUID-based filenames and a path pattern outside `wwwroot`
 - [ ] T014 [US1] Update the project detail view to surface project documents in `ContosoDashboard/Pages/ProjectDetails.razor`
-- [ ] T015 [US1] Add the document status and lifecycle handling needed for queued or pending scans in `ContosoDashboard/Models/Document.cs` and `ContosoDashboard/Services/DocumentService.cs`
+- [x] T015 [US1] Add the document status and lifecycle handling needed for queued or pending scans in `ContosoDashboard/Models/Document.cs` and `ContosoDashboard/Services/DocumentService.cs`
 
 **Checkpoint**: At this point, User Story 1 should be fully functional and testable independently.
 

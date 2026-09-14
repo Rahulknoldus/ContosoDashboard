@@ -43,6 +43,10 @@ builder.Services.AddScoped<ITaskService, TaskService>();
 builder.Services.AddScoped<IProjectService, ProjectService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
+builder.Services.AddScoped<IFileStorageService, LocalFileStorageService>();
+builder.Services.AddScoped<IScanQueueService, AzureQueueScanService>();
+builder.Services.AddScoped<IDocumentService, DocumentService>();
+builder.Services.AddControllers();
 
 // Add HttpContextAccessor for accessing user claims
 builder.Services.AddHttpContextAccessor();
@@ -57,6 +61,65 @@ using (var scope = app.Services.CreateScope())
     {
         var context = services.GetRequiredService<ApplicationDbContext>();
         context.Database.EnsureCreated(); // For development - use migrations in production
+        context.Database.ExecuteSqlRaw(@"
+            CREATE TABLE IF NOT EXISTS Documents (
+                DocumentId INTEGER NOT NULL CONSTRAINT PK_Documents PRIMARY KEY AUTOINCREMENT,
+                Title TEXT NOT NULL,
+                Description TEXT NULL,
+                Category TEXT NOT NULL,
+                ProjectId INTEGER NULL,
+                TaskId INTEGER NULL,
+                UploadedByUserId INTEGER NOT NULL,
+                FileName TEXT NOT NULL,
+                StoredFilePath TEXT NOT NULL,
+                FileSizeBytes INTEGER NOT NULL,
+                MimeType TEXT NOT NULL,
+                UploadedAtUtc TEXT NOT NULL,
+                UpdatedAtUtc TEXT NOT NULL,
+                IsDeleted INTEGER NOT NULL,
+                Status INTEGER NOT NULL,
+                ScanStatus INTEGER NOT NULL,
+                CONSTRAINT FK_Documents_Users_UploadedByUserId FOREIGN KEY (UploadedByUserId) REFERENCES Users (UserId) ON DELETE RESTRICT,
+                CONSTRAINT FK_Documents_Projects_ProjectId FOREIGN KEY (ProjectId) REFERENCES Projects (ProjectId) ON DELETE SET NULL,
+                CONSTRAINT FK_Documents_Tasks_TaskId FOREIGN KEY (TaskId) REFERENCES Tasks (TaskId) ON DELETE SET NULL
+            );
+            CREATE TABLE IF NOT EXISTS DocumentShares (
+                DocumentShareId INTEGER NOT NULL CONSTRAINT PK_DocumentShares PRIMARY KEY AUTOINCREMENT,
+                DocumentId INTEGER NOT NULL,
+                SharedWithUserId INTEGER NOT NULL,
+                SharedByUserId INTEGER NOT NULL,
+                SharedAtUtc TEXT NOT NULL,
+                Message TEXT NULL,
+                IsActive INTEGER NOT NULL,
+                CONSTRAINT FK_DocumentShares_Documents_DocumentId FOREIGN KEY (DocumentId) REFERENCES Documents (DocumentId) ON DELETE CASCADE,
+                CONSTRAINT FK_DocumentShares_Users_SharedWithUserId FOREIGN KEY (SharedWithUserId) REFERENCES Users (UserId) ON DELETE RESTRICT,
+                CONSTRAINT FK_DocumentShares_Users_SharedByUserId FOREIGN KEY (SharedByUserId) REFERENCES Users (UserId) ON DELETE RESTRICT
+            );
+            CREATE TABLE IF NOT EXISTS DocumentAccessLogs (
+                LogId INTEGER NOT NULL CONSTRAINT PK_DocumentAccessLogs PRIMARY KEY AUTOINCREMENT,
+                DocumentId INTEGER NOT NULL,
+                UserId INTEGER NOT NULL,
+                ActionType TEXT NOT NULL,
+                ActionAtUtc TEXT NOT NULL,
+                Details TEXT NULL,
+                CONSTRAINT FK_DocumentAccessLogs_Documents_DocumentId FOREIGN KEY (DocumentId) REFERENCES Documents (DocumentId) ON DELETE CASCADE,
+                CONSTRAINT FK_DocumentAccessLogs_Users_UserId FOREIGN KEY (UserId) REFERENCES Users (UserId) ON DELETE RESTRICT
+            );
+            CREATE TABLE IF NOT EXISTS ScanJobMessages (
+                ScanJobMessageId INTEGER NOT NULL CONSTRAINT PK_ScanJobMessages PRIMARY KEY AUTOINCREMENT,
+                DocumentId INTEGER NOT NULL,
+                QueueName TEXT NOT NULL,
+                Payload TEXT NOT NULL,
+                State INTEGER NOT NULL,
+                CreatedAtUtc TEXT NOT NULL,
+                ProcessedAtUtc TEXT NULL
+            );
+            CREATE INDEX IF NOT EXISTS IX_Documents_UploadedByUserId ON Documents (UploadedByUserId);
+            CREATE INDEX IF NOT EXISTS IX_Documents_ProjectId ON Documents (ProjectId);
+            CREATE INDEX IF NOT EXISTS IX_Documents_ScanStatus ON Documents (ScanStatus);
+            CREATE INDEX IF NOT EXISTS IX_DocumentShares_DocumentId_SharedWithUserId_IsActive ON DocumentShares (DocumentId, SharedWithUserId, IsActive);
+            CREATE INDEX IF NOT EXISTS IX_DocumentAccessLogs_DocumentId_ActionAtUtc ON DocumentAccessLogs (DocumentId, ActionAtUtc);
+        ");
     }
     catch (Exception ex)
     {
@@ -105,6 +168,7 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.MapControllers();
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
 
