@@ -5,6 +5,11 @@
 **Status**: Draft
 **Input**: User description: "Document upload and management feature for ContosoDashboard"
 
+## Clarifications
+
+### Session 2026-09-14
+- Q: Should the initial implementation treat malware scanning as a placeholder security gate with a clear future integration path, or must it perform a live antivirus check in the offline training app? → A: Placeholder security gate with a documented future integration path.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Upload and organize work documents (Priority: P1)
@@ -96,6 +101,7 @@ A user working within a task or project needs to associate relevant files with t
 - **FR-013**: The system MUST log document uploads, downloads, deletions, and shared access events for auditing and administrative review.
 - **FR-014**: The system MUST support both personal and project document management while preserving user privacy and project boundaries.
 - **FR-015**: The system MUST remain usable in an offline training environment while preserving a clear path to future cloud-based storage and migration.
+- **FR-016**: The system MUST treat malware scanning as a documented future security integration for production and enterprise use, while enforcing the current MVP validation rules for file type, file size, and safe local storage in the offline training environment.
 
 ### Key Entities *(include if feature involves data)*
 
