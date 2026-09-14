@@ -1,50 +1,44 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+<!--
+Sync Impact Report
+- Version change: 0.0.0 -> 1.0.0
+- Modified principles: none -> I. Security-by-Design, II. Offline-First, Cloud-Ready Architecture, III. Test-First and Verification, IV. User Isolation and Explicit Authorization, V. Simplicity over Cleverness
+- Added sections: Project Constraints and Standards; Development Workflow
+- Removed sections: none
+- Deferred items: Original ratification date for the project constitution is not recorded in the repository; the initial adoption date is set to 2026-09-14 for this governance document.
+-->
+
+# ContosoDashboard Constitution
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### I. Security-by-Design
+All features must preserve the training application's security model: explicit authentication, role-based authorization, and clear isolation of user data. No page, service, or route may bypass mock identity checks or expose records outside the current user's allowed scope. This principle is non-negotiable because the project is used to teach secure design patterns and because bypasses can create both learning regressions and real security risk.
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+### II. Offline-First, Cloud-Ready Architecture
+The system must remain functional without external cloud services, while keeping infrastructure boundaries explicit. Local development data stores, file handling, and authentication are acceptable for training; cross-cutting abstractions must clarify how Azure or similar services could replace them later. This preserves classroom availability and demonstrates layered architecture without coupling business logic to specific infrastructure.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+### III. Test-First and Verification
+Changes to behavior must be accompanied by test evidence or a reproducible validation step before merge. New features, security controls, and data-access changes require targeted checks showing the expected outcome and any regressions prevented. This standard ensures that user-facing behavior and security assumptions remain visible and provable instead of fragile or accidental.
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+### IV. User Isolation and Explicit Authorization
+Each user, team member, and project view must obey the least-privilege model. Database queries, service methods, and page access must be scoped by the current identity and allowed roles; direct object access by ID must be validated against membership or permissions. This prevents unauthorized viewing, editing, and cross-user leakage in a multi-user dashboard.
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+### V. Simplicity over Cleverness
+The codebase must favor readable, maintainable, and explainable patterns over abstraction for abstraction's sake. Features should remain small, domain-oriented, and easy to reason about; unnecessary frameworks, hidden magic, or opaque state flows are discouraged. This keeps the repository understandable for learners while making iterative change safer and more predictable.
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+## Project Constraints and Standards
+This repository is a training application, not a production deployment baseline. It must remain suitable for offline classroom use, accept simplified mock implementations, and clearly document any intentional limitations. Core technology standards include ASP.NET Core with Blazor Server, EF Core models, service-layer separation, and explicit authorization checks around protected user data.
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+Security headers, anti-IDOR checks, and role-aware access control are mandatory for any protected feature. Production migration paths may be documented, but the default behavior of the training app remains local and self-contained. The project must not imply that mock authentication or local-only services are production-ready without additional hardening, identity integration, and operational controls.
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+## Development Workflow
+All changes must follow the same rhythm: clarify scope, implement the smallest valid change, validate behavior, and review for security and maintainability. Feature work must preserve the dashboard's boundaries between Models, Data, Services, and Pages, and must not bypass established authentication or authorization layers. Pull requests and review comments must check for security regressions, user-data isolation, and clarity of intent.
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+If a feature is intentionally out of scope for the training environment, the limitation must be documented in the relevant specification or README so that the policy remains explicit and reviewable.
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
+This Constitution supersedes informal working practices for the repository. Any change that affects access control, project data, user visibility, infrastructure abstraction, or quality gates must document the impact and be reviewed against these principles before merge. Compliance review is expected for each substantial change: security assumptions, role boundaries, and test evidence must be checked.
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+Amendments require a written change to the constitution, a version bump in accordance with the project versioning policy, and a brief review of the governance impact. Major policy or principle changes require explicit documentation of the reasoning and the expected migration or training impact before adoption. Minor clarifications or wording adjustments may be documented without broad follow-up, but they still require versioning and review.
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+**Version**: 1.0.0 | **Ratified**: 2026-09-14 | **Last Amended**: 2026-09-14
